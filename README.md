@@ -1,4 +1,4 @@
-# How to Set Up Environment
+## How to Set Up Environment
 Make sure you have Node v6 or later installed. No Xcode or Android Studio installation is required.
 [Download the Latest Version of Node](https://nodejs.org/en/)
 

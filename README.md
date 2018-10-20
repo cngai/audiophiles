@@ -16,6 +16,6 @@ Make sure you have the Xcode iOS Simulator downloaded.
 `cd audiophiles`
 3. Run the application on the Xcode iOS simulator:
 `npm run ios`
-..* The simulator should start running.
-..* The simulator will ask you if you want to open using Expo. Select Yes.
-..* The application should open and initially show 'Open up App.js to start working on your app!'
+⋅⋅* The simulator should start running.
+⋅⋅* The simulator will ask you if you want to open using Expo. Select Yes.
+⋅⋅* The application should open and initially show 'Open up App.js to start working on your app!'

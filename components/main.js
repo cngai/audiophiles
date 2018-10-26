@@ -11,6 +11,7 @@ import Note from './note';
 import KeyboardSpacer from 'react-native-keyboard-spacer';	//used to slide view up when keyboard appears
 
 
+
 export default class Main extends Component {
 
   constructor(props) {
@@ -45,7 +46,7 @@ export default class Main extends Component {
             style={styles.textInput}
             onChangeText={(noteText) => this.setState({noteText})}
             value={this.state.noteText}
-            placeholder='Add Note'
+            placeholder='Add Song'
             placeholderTextColor='white'
             underlineColorAndroid='transparent'>
 
@@ -56,7 +57,6 @@ export default class Main extends Component {
         <TouchableOpacity onPress={ this.addNote.bind(this) } style={styles.addButton}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
-
 
       </View>
     );

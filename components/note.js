@@ -22,7 +22,7 @@ export default class Note extends Component {
       {
         text: 'X',
         backgroundColor: '#002d77',
-        onPress: () => { this.props.deleteMethod },
+        onPress: () => this.props.deleteMethod()
       }
     ]
 
@@ -31,19 +31,16 @@ export default class Note extends Component {
         <View key={this.props.keyval} style={styles.note}>
 
           <View style={styles.noteTextBorder}>
-            <Text style={styles.noteTextDate}>{this.props.val.date}</Text>
             <Text style={styles.noteTextNote}>{this.props.val.note}</Text>
-            <Text>{this.state.counter}</Text>
+          </View>
+
+          <View>
+            <Text style={styles.noteTextCounter}>{this.state.counter}</Text>
           </View>
 
           <TouchableOpacity onPress={this.updateVote} style={styles.noteVote}>
             {this.state.voted ? (<Text style={styles.noteDeleteText}>-</Text>) :
             (<Text style={styles.noteDeleteText}>+</Text>)}
-            }
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.props.deleteMethod} style={styles.noteDelete}>
-            <Text style={styles.noteDeleteText}>X</Text>
           </TouchableOpacity>
 
         </View>
@@ -75,11 +72,14 @@ const styles = StyleSheet.create({
       padding: 20,
       paddingRight: 100,
       borderBottomWidth:2,
-      borderBottomColor: '#ededed'
+      borderBottomColor: '#ededed',
+      flexDirection: 'row'
   },
   noteTextBorder: {
       borderLeftWidth: 10,
-      borderLeftColor: '#002d77'
+      borderLeftColor: '#002d77',
+      justifyContent: 'center',
+      width: 320
   },
   noteTextDate: {
       paddingLeft: 10,
@@ -89,15 +89,9 @@ const styles = StyleSheet.create({
       paddingLeft: 10,
       fontSize: 20
   },
-  noteDelete: {
-      position: 'absolute',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#002d77',
-      padding: 10,
-      top: 10,
-      bottom: 10,
-      right: 10
+  noteTextCounter: {
+      paddingLeft: 10,
+      fontSize: 20,
   },
   noteVote: {
       position: 'absolute',
@@ -107,7 +101,7 @@ const styles = StyleSheet.create({
       padding: 10,
       top: 10,
       bottom: 10,
-      right: 100
+      right: 10
   },
   noteDeleteText: {
       color: 'white',

@@ -10,8 +10,6 @@ import {
 import Note from './note';
 import KeyboardSpacer from 'react-native-keyboard-spacer';	//used to slide view up when keyboard appears
 
-
-
 export default class Main extends Component {
 
   constructor(props) {

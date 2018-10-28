@@ -40,21 +40,22 @@ export default class Main extends Component {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={(noteText) => this.setState({noteText})}
-            value={this.state.noteText}
-            placeholder='Add Song'
-            placeholderTextColor='white'
-            underlineColorAndroid='transparent'>
+	          <TextInput
+	            style={styles.textInput}
+	            onChangeText={(noteText) => this.setState({noteText})}
+	            value={this.state.noteText}
+	            placeholder='Add Song'
+	            placeholderTextColor='white'
+	            underlineColorAndroid='transparent'>
+	          </TextInput>
 
-          </TextInput>
+	          <TouchableOpacity onPress={ this.addNote.bind(this) } style={styles.addButton}>
+		      		<Text style={styles.addButtonText}>+</Text>
+		       </TouchableOpacity>
           <KeyboardSpacer/>
         </View>        
 
-        <TouchableOpacity onPress={ this.addNote.bind(this) } style={styles.addButton}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
+        
 
       </View>
     );
@@ -105,32 +106,33 @@ const styles = StyleSheet.create({
   },
   footer: {
       position: 'absolute',
-      bottom: 0,
+      bottom: -40,
       left: 0,
       right: 0,
-      zIndex: 10
+      zIndex: 10,
+      backgroundColor: '#252525'
   },
   textInput: {
       alignSelf: 'stretch',
       color: '#fff',
       padding: 20,
-      backgroundColor: '#252525',
-      borderTopWidth:2,
-      borderTopColor: '#ededed',
+      // borderTopWidth:2,
+      // borderTopColor: '#ededed',
       fontStyle: 'italic'
   },
   addButton: {
-      position: 'absolute',
       zIndex: 11,
-      right: 15,
-      bottom: 70,
       backgroundColor: '#002d77',
       width: 40,
       height: 40,
       borderRadius: 35,
+      borderColor: '#fff',
+      borderWidth: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      elevation: 8
+      elevation: 8,
+      left: 360,
+      bottom: 47
   },
   addButtonText: {
       color: '#fff',

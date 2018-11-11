@@ -10,10 +10,7 @@
   },
   "dependencies": {
     "expo": "^30.0.1",
-<<<<<<< HEAD
     "firebase": "^5.5.7",
-=======
->>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
     "rc-swipeout": "^2.0.11",
     "react": "16.3.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",

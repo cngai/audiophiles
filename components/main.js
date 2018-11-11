@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 import Note from './note';
 import KeyboardSpacer from 'react-native-keyboard-spacer';	//used to slide view up when keyboard appears
+<<<<<<< HEAD
 import database from './database';
+=======
+>>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
 
 export default class Main extends Component {
 
@@ -19,6 +22,7 @@ export default class Main extends Component {
       noteArray: [],
       noteText: '',
     }
+<<<<<<< HEAD
     //initialize data array from the server and listen for changes
     database.ref('note').on('value', (snapshot) => {
       temp= []
@@ -31,13 +35,19 @@ export default class Main extends Component {
       this.setState({ noteArray: temp });
     })
     
+=======
+>>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
   }
 
   render() {
 
     let notes = this.state.noteArray.map((val, key) => {
       return <Note key={key} keyVal={key} val={val}
+<<<<<<< HEAD
               deleteMethod={ ()=> this.deleteNote(key, val) } />
+=======
+              deleteMethod={ ()=> this.deleteNote(key) } />
+>>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
     });
 
     return (
@@ -75,22 +85,41 @@ export default class Main extends Component {
   }
 
   addNote() {
+<<<<<<< HEAD
     if (this.state.noteText) {
       const note = {
         'note': this.state.noteText,
         'votes': 0
       }
       database.ref('note').push(note)
+=======
+
+    if (this.state.noteText) {
+      var d = new Date();
+      this.state.noteArray.push({
+        'date': (d.getMonth() + 1) +
+        "/" + d.getDate() +
+        "/" + d.getFullYear(),        
+        'note': this.state.noteText
+      });
+      this.setState({ noteArray: this.state.noteArray });
+>>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
       this.setState({ noteText: ''});
     }
   }
 
+<<<<<<< HEAD
   deleteNote(key, val) {
     this.state.noteArray.splice(key, 1); 
     const id = val.id;
 
     database.ref(`note/${id}`).remove();
 
+=======
+  deleteNote(key) {
+    this.state.noteArray.splice(key, 1);
+    this.setState({ noteArray: this.state.noteArray })
+>>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
   }
 }
 

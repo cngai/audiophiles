@@ -6,7 +6,11 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import Swipeout from 'react-native-swipeout'; //used to create swipe delete button
+<<<<<<< HEAD
 import database from './database';
+=======
+
+>>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
 
 export default class Note extends Component {
   constructor(props) {
@@ -35,7 +39,11 @@ export default class Note extends Component {
           </View>
 
           <View>
+<<<<<<< HEAD
             <Text style={styles.noteTextCounter}>{this.props.val.votes}</Text>
+=======
+            <Text style={styles.noteTextCounter}>{this.state.counter}</Text>
+>>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
           </View>
 
           <TouchableOpacity onPress={this.updateVote} style={styles.noteVote}>
@@ -51,6 +59,7 @@ export default class Note extends Component {
 
   //either add or delete vote
   updateVote = () => {
+<<<<<<< HEAD
     const id = this.props.val.id;
 
     if (!this.state.voted){
@@ -72,6 +81,16 @@ export default class Note extends Component {
       })
       this.setState({
         votes: this.props.val.votes - 1,
+=======
+    if (!this.state.voted){
+      this.setState({
+        counter: this.state.counter + 1,
+        voted: true
+      });
+    }
+    else {
+      this.setState({
+>>>>>>> 2b8ac2b722802c6be897cfd085f661c029e820a9
         counter: this.state.counter - 1,
         voted: false
       });

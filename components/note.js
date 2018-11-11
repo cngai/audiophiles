@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
       borderLeftWidth: 10,
       borderLeftColor: '#002d77',
       justifyContent: 'center',
-      width: 320
+      width: 270
   },
   noteTextDate: {
       paddingLeft: 10,

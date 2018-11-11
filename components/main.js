@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       elevation: 8,
-      left: 360,
+      left: 320,
       bottom: 47
   },
   addButtonText: {

@@ -30,7 +30,7 @@ export default class Main extends Component {
       })
       this.setState({ noteArray: temp });
     })
-    
+
   }
 
   render() {
@@ -66,9 +66,9 @@ export default class Main extends Component {
               <Text style={styles.addButtonText}>+</Text>
            </TouchableOpacity>
           <KeyboardSpacer/>
-        </View>        
+        </View>
 
-        
+
 
       </View>
     );
@@ -86,7 +86,7 @@ export default class Main extends Component {
   }
 
   deleteNote(key, val) {
-    this.state.noteArray.splice(key, 1); 
+    this.state.noteArray.splice(key, 1);
     const id = val.id;
 
     database.ref(`note/${id}`).remove();

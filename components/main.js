@@ -37,7 +37,8 @@ export default class Main extends Component {
 
     let notes = this.state.noteArray.map((val, key) => {
       return <Note key={key} keyVal={key} val={val}
-              deleteMethod={ ()=> this.deleteNote(key, val) } />
+              deleteMethod={ ()=> this.deleteNote(key, val) }
+              sortMethod={ ()=> this.sortNotes() }/>
     });
 
     return (
@@ -78,7 +79,8 @@ export default class Main extends Component {
     if (this.state.noteText) {
       const note = {
         'note': this.state.noteText,
-        'votes': 0
+        'votes': 0,
+        'voted': false
       }
       database.ref('note').push(note)
       this.setState({ noteText: ''});
@@ -91,6 +93,21 @@ export default class Main extends Component {
 
     database.ref(`note/${id}`).remove();
 
+  }
+
+  sortNotes() {    
+    let newArray = this.state.noteArray;
+    console.log(newArray);
+    for (var i = 1; i < newArray.length; i++){
+      if (i !== 0 && (newArray[i].votes > newArray[i-1].votes)){
+        var temp = newArray[i];
+        newArray[i] = newArray[i-1];
+        newArray[i-1] = temp;
+        i = i-2;
+        this.setState({ noteArray: newArray });
+      }
+    }
+    console.log(this.state.noteArray);
   }
 }
 

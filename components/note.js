@@ -39,7 +39,7 @@ export default class Note extends Component {
           </View>
 
           <TouchableOpacity onPress={this.updateVote} style={styles.noteVote}>
-            {this.state.voted ? (<Text style={styles.noteDeleteText}>-</Text>) :
+            {this.props.val.voted ? (<Text style={styles.noteDeleteText}>-</Text>) :
             (<Text style={styles.noteDeleteText}>+</Text>)}
           </TouchableOpacity>
 
@@ -53,29 +53,38 @@ export default class Note extends Component {
   updateVote = () => {
     const id = this.props.val.id;
 
-    if (!this.state.voted){
+    if (!this.props.val.voted){
+      this.props.val.voted = true;
       database.ref(`note/${id}`).update({
-        votes: this.props.val.votes + 1
+        votes: this.props.val.votes + 1,
+        voted: this.props.val.voted
       })
+
       this.setState({
         votes: this.props.val.votes + 1,
         counter: this.state.counter + 1,
-        voted: true
+        voted: this.props.val.voted
       });
 
+      this.props.val.votes++;
     }
-    else {
+    else if (this.props.val.voted){
+      this.props.val.voted = false;
       database.ref(`note/${id}`).update({
-        votes: this.props.val.votes - 1
-      }).then(() => {
-        
+        votes: this.props.val.votes - 1,
+        voted: this.props.val.voted
       })
+
       this.setState({
         votes: this.props.val.votes - 1,
         counter: this.state.counter - 1,
-        voted: false
+        voted: this.props.val.voted
       });
+
+      this.props.val.votes--;
     }
+
+    this.props.sortMethod();
   }
 }
 

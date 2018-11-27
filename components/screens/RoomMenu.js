@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, ScrollView, TouchableOpacity, Button } from 'react-native';
 
 export class RoomMenu extends Component {
   render() {

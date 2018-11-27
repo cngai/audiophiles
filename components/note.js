@@ -21,7 +21,7 @@ export default class Note extends Component {
     let swipeoutBtns = [
       {
         text: 'X',
-        backgroundColor: '#002d77',
+        backgroundColor: '#000000',
         onPress: () => this.props.deleteMethod()
       }
     ]
@@ -45,7 +45,7 @@ export default class Note extends Component {
 
         </View>
       </Swipeout>
-      
+
     );
   }
 
@@ -68,7 +68,7 @@ export default class Note extends Component {
       database.ref(`note/${id}`).update({
         votes: this.props.val.votes - 1
       }).then(() => {
-        
+
       })
       this.setState({
         votes: this.props.val.votes - 1,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   noteTextBorder: {
       borderLeftWidth: 10,
-      borderLeftColor: '#002d77',
+      borderLeftColor: '#cc0000',
       justifyContent: 'center',
       width: 270
   },
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
       position: 'absolute',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#002d77',
+      backgroundColor: '#cc0000',
       padding: 10,
       top: 10,
       bottom: 10,

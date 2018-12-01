@@ -13,23 +13,38 @@ export default class Note extends Component {
     super(props);
     this.state = {
       counter: 0,
-      voted: false
+      voted: false,
+      isDisabled: false
     };
+    
+  }
+  componentDidMount() {
+    database.ref(`note/${this.props.val.id}/users`).on('value', (snapshot) => {
+      temp= []
+      snapshot.forEach((child) => {
+        if (JSON.stringify(Expo.Constants.installationId) == JSON.stringify(child)) {
+          this.setState({
+            voted: true
+          })
+        }
+      })
+      // console.log(this.state.voted);
+    })
   }
 
   render() {
     let swipeoutBtns = [
       {
         text: 'X',
-        backgroundColor: '#002d77',
-        onPress: () => this.props.deleteMethod()
+        backgroundColor: 'red',
+        onPress: () => this.props.deleteMethod(),
+        
       }
     ]
 
     return (
-      <Swipeout right={swipeoutBtns} backgroundColor='#ffffff'>
+      <Swipeout right={swipeoutBtns} backgroundColor='white'>
         <View key={this.props.keyval} style={styles.note}>
-
           <View style={styles.noteTextBorder}>
             <Text style={styles.noteTextNote}>{this.props.val.note}</Text>
           </View>
@@ -38,43 +53,56 @@ export default class Note extends Component {
             <Text style={styles.noteTextCounter}>{this.props.val.votes}</Text>
           </View>
 
-          <TouchableOpacity onPress={this.updateVote} style={styles.noteVote}>
+          <TouchableOpacity onPress={this.updateVote} disabled={this.state.isDisabled} style={styles.noteVote}>
             {this.state.voted ? (<Text style={styles.noteDeleteText}>-</Text>) :
             (<Text style={styles.noteDeleteText}>+</Text>)}
           </TouchableOpacity>
 
         </View>
       </Swipeout>
-      
+
     );
   }
 
   //either add or delete vote
   updateVote = () => {
-    const id = this.props.val.id;
+    this.setState({ isDisabled: true })
+    setTimeout(() => this.setState({ isDisabled: false }), 500);
 
+    const id = this.props.val.id;
     if (!this.state.voted){
+      database.ref(`note/${id}/users`).push(Expo.Constants.installationId)
       database.ref(`note/${id}`).update({
-        votes: this.props.val.votes + 1
-      })
-      this.setState({
         votes: this.props.val.votes + 1,
-        counter: this.state.counter + 1,
-        voted: true
-      });
+      }).then(() => {
+        this.setState({
+          votes: this.props.val.votes + 1,
+          counter: this.state.counter + 1,
+        });
+      })
+      
+      
 
     }
     else {
       database.ref(`note/${id}`).update({
         votes: this.props.val.votes - 1
       }).then(() => {
-        
+        database.ref(`note/${id}/users`).once('value', (snapshot) => {
+          temp= []
+          snapshot.forEach((childs) => {
+            if (JSON.stringify(Expo.Constants.installationId) == JSON.stringify(childs)) {
+              childs.ref.remove();
+            }
+          })
+        })
+      }).then(() => {
+        this.setState({
+          voted: false,
+          votes: this.props.val.votes - 1,
+          counter: this.state.counter - 1,
+        })
       })
-      this.setState({
-        votes: this.props.val.votes - 1,
-        counter: this.state.counter - 1,
-        voted: false
-      });
     }
   }
 }
@@ -90,7 +118,7 @@ const styles = StyleSheet.create({
   },
   noteTextBorder: {
       borderLeftWidth: 10,
-      borderLeftColor: '#002d77',
+      borderLeftColor: '#3498db',
       justifyContent: 'center',
       width: 270
   },
@@ -107,10 +135,12 @@ const styles = StyleSheet.create({
       fontSize: 20,
   },
   noteVote: {
+      borderRadius: 5,
+      width: 30,
       position: 'absolute',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#002d77',
+      backgroundColor: '#3498db',
       padding: 10,
       top: 10,
       bottom: 10,

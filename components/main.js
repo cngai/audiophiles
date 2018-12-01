@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import Note from './note';
-import KeyboardSpacer from 'react-native-keyboard-spacer';	//used to slide view up when keyboard appears
+import KeyboardSpacer from 'react-native-keyboard-spacer';  //used to slide view up when keyboard appears
 import database from './database';
 
 

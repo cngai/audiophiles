@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import Swipeout from 'react-native-swipeout'; //used to create swipe delete button
-import database from './database';
+import fire from './database';
 
 export default class Note extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ export default class Note extends Component {
     let swipeoutBtns = [
       {
         text: 'X',
-        backgroundColor: '#002d77',
+        backgroundColor: '#000000',
         onPress: () => this.props.deleteMethod()
       }
     ]
@@ -45,7 +45,7 @@ export default class Note extends Component {
 
         </View>
       </Swipeout>
-      
+
     );
   }
 
@@ -54,7 +54,7 @@ export default class Note extends Component {
     const id = this.props.val.id;
 
     if (!this.state.voted){
-      database.ref(`note/${id}`).update({
+      fire.database().ref(`note/${id}`).update({
         votes: this.props.val.votes + 1
       })
       this.setState({
@@ -65,10 +65,10 @@ export default class Note extends Component {
 
     }
     else {
-      database.ref(`note/${id}`).update({
+      fire.database().ref(`note/${id}`).update({
         votes: this.props.val.votes - 1
       }).then(() => {
-        
+
       })
       this.setState({
         votes: this.props.val.votes - 1,
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
   },
   noteTextBorder: {
       borderLeftWidth: 10,
-      borderLeftColor: '#002d77',
+      borderRadius: 2,
+      borderLeftColor: '#cc0000',
       justifyContent: 'center',
       width: 270
   },
@@ -110,7 +111,8 @@ const styles = StyleSheet.create({
       position: 'absolute',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#002d77',
+      borderRadius: 5,
+      backgroundColor: '#cc0000',
       padding: 10,
       top: 10,
       bottom: 10,

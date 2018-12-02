@@ -1,17 +1,10 @@
-import React, {Component} from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    ScrollView,
-    TouchableOpacity,
-} from 'react-native';
-import Note from './note';
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, TextInput, ScrollView, TouchableOpacity, Button } from 'react-native';
+import Note from '../note';
 import KeyboardSpacer from 'react-native-keyboard-spacer';  //used to slide view up when keyboard appears
-import database from './database';
+import fire from '../database';
 
-export default class Main extends Component {
+export default class Room extends Component {
 
   constructor(props) {
     super(props);
@@ -20,7 +13,7 @@ export default class Main extends Component {
       noteText: '',
     }
     //initialize data array from the server and listen for changes
-    database.ref('note').on('value', (snapshot) => {
+    fire.database().ref('note').on('value', (snapshot) => {
       temp= []
       snapshot.forEach((child) => {
         temp.push({
@@ -30,7 +23,6 @@ export default class Main extends Component {
       })
       this.setState({ noteArray: temp });
     })
-    
   }
 
   render() {
@@ -43,9 +35,8 @@ export default class Main extends Component {
     return (
       <View style={styles.container}>
 
-
         <View style={styles.header}>
-          <Text style={styles.headerText}>Audiophiles</Text>
+          <Text style={styles.headerText}>Voting Room</Text>
         </View>
 
         <ScrollView style={styles.scrollContainer}>
@@ -66,9 +57,9 @@ export default class Main extends Component {
               <Text style={styles.addButtonText}>+</Text>
            </TouchableOpacity>
           <KeyboardSpacer/>
-        </View>        
+        </View>
 
-        
+
 
       </View>
     );
@@ -80,16 +71,16 @@ export default class Main extends Component {
         'note': this.state.noteText,
         'votes': 0
       }
-      database.ref('note').push(note)
+      fire.database().ref('note').push(note)
       this.setState({ noteText: ''});
     }
   }
 
   deleteNote(key, val) {
-    this.state.noteArray.splice(key, 1); 
+    this.state.noteArray.splice(key, 1);
     const id = val.id;
 
-    database.ref(`note/${id}`).remove();
+    fire.database().ref(`note/${id}`).remove();
 
   }
 }
@@ -99,18 +90,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-      backgroundColor: '#002d77',
+      backgroundColor: '#cc0000',
       alignItems: 'center',
       justifyContent:'center',
-      borderBottomWidth: 10,
-      borderBottomColor: '#ddd'
+      borderBottomWidth: 2,
+      borderBottomColor: '#cc0000'
   },
   headerText: {
       color: 'white',
       fontSize: 30,
-      padding: 20,
+      padding: 35,
       paddingBottom: 10,
-      fontFamily: 'Futura'
+      fontFamily: 'Helvetica Neue',
+      fontWeight: 'normal'
   },
   scrollContainer: {
       flex: 1,
@@ -122,32 +114,31 @@ const styles = StyleSheet.create({
       left: 0,
       right: 0,
       zIndex: 10,
-      backgroundColor: '#252525'
+      backgroundColor: '#1a1a1a'
   },
   textInput: {
       alignSelf: 'stretch',
       color: '#fff',
       padding: 20,
-      // borderTopWidth:2,
-      // borderTopColor: '#ededed',
+      fontFamily: 'Helvetica Neue',
       fontStyle: 'italic'
   },
   addButton: {
       zIndex: 11,
-      backgroundColor: '#002d77',
+      backgroundColor: '#cc0000',
       width: 40,
       height: 40,
-      borderRadius: 35,
-      borderColor: '#fff',
+      borderRadius: 10,
+      borderColor: '#cc0000',
       borderWidth: 1,
       alignItems: 'center',
       justifyContent: 'center',
       elevation: 8,
-      left: 320,
+      left: 360,
       bottom: 47
   },
   addButtonText: {
-      color: '#fff',
+      color: '#e6e6e6',
       fontSize: 24,
       fontWeight: 'bold'
   }

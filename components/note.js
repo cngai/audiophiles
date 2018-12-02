@@ -6,44 +6,30 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import Swipeout from 'react-native-swipeout'; //used to create swipe delete button
-import database from './database';
+import fire from './database';
 
 export default class Note extends Component {
   constructor(props) {
     super(props);
     this.state = {
       counter: 0,
-      voted: false,
-      isDisabled: false
+      voted: false
     };
-    
   }
-  // componentDidMount() {
-  //   database.ref(`note/${this.props.val.id}/users`).on('value', (snapshot) => {
-  //     temp= []
-  //     snapshot.forEach((child) => {
-  //       if (JSON.stringify(Expo.Constants.installationId) == JSON.stringify(child)) {
-  //         this.setState({
-  //           voted: true
-  //         })
-  //       }
-  //     })
-  //     // console.log(this.state.voted);
-  //   })
-  // }
 
   render() {
     let swipeoutBtns = [
       {
         text: 'X',
-        backgroundColor: 'red',
+        backgroundColor: '#000000',
         onPress: () => this.props.deleteMethod()
       }
     ]
 
     return (
-      <Swipeout right={swipeoutBtns} backgroundColor='white'>
+      <Swipeout right={swipeoutBtns} backgroundColor='#ffffff'>
         <View key={this.props.keyval} style={styles.note}>
+
           <View style={styles.noteTextBorder}>
             <Text style={styles.noteTextNote}>{this.props.val.note}</Text>
           </View>
@@ -52,7 +38,7 @@ export default class Note extends Component {
             <Text style={styles.noteTextCounter}>{this.props.val.votes}</Text>
           </View>
 
-          <TouchableOpacity onPress={this.updateVote} disabled={this.state.isDisabled} style={styles.noteVote}>
+          <TouchableOpacity onPress={this.updateVote} style={styles.noteVote}>
             {this.state.voted ? (<Text style={styles.noteDeleteText}>-</Text>) :
             (<Text style={styles.noteDeleteText}>+</Text>)}
           </TouchableOpacity>
@@ -65,42 +51,30 @@ export default class Note extends Component {
 
   //either add or delete vote
   updateVote = () => {
-    this.setState({ isDisabled: true })
-    setTimeout(() => this.setState({ isDisabled: false }), 500);
-
     const id = this.props.val.id;
+
     if (!this.state.voted){
-      database.ref(`note/${id}/users`).push(Expo.Constants.installationId)
-      database.ref(`note/${id}`).update({
-        votes: this.props.val.votes + 1,
-      }).then(() => {
-        this.setState({
-          votes: this.props.val.votes + 1,
-          counter: this.state.counter + 1,
-        });
+      fire.database().ref(`note/${id}`).update({
+        votes: this.props.val.votes + 1
       })
-      
-      
+      this.setState({
+        votes: this.props.val.votes + 1,
+        counter: this.state.counter + 1,
+        voted: true
+      });
 
     }
     else {
-      database.ref(`note/${id}`).update({
+      fire.database().ref(`note/${id}`).update({
         votes: this.props.val.votes - 1
       }).then(() => {
-        database.ref(`note/${id}/users`).once('value', (snapshot) => {
-          temp= []
-          snapshot.forEach((childs) => {
-            if (JSON.stringify(Expo.Constants.installationId) == JSON.stringify(childs)) {
-              childs.ref.remove();
-            }
-          })
-        })
-      }).then(() => {
-        this.setState({
-          voted: false,
-          votes: this.props.val.votes - 1,
-          counter: this.state.counter - 1
+
       })
+      this.setState({
+        votes: this.props.val.votes - 1,
+        counter: this.state.counter - 1,
+        voted: false
+      });
     }
   }
 }
@@ -116,7 +90,8 @@ const styles = StyleSheet.create({
   },
   noteTextBorder: {
       borderLeftWidth: 10,
-      borderLeftColor: '#3498db',
+      borderRadius: 2,
+      borderLeftColor: '#cc0000',
       justifyContent: 'center',
       width: 270
   },
@@ -133,12 +108,11 @@ const styles = StyleSheet.create({
       fontSize: 20,
   },
   noteVote: {
-      borderRadius: 5,
-      width: 30,
       position: 'absolute',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#3498db',
+      borderRadius: 5,
+      backgroundColor: '#cc0000',
       padding: 10,
       top: 10,
       bottom: 10,

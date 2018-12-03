@@ -6,7 +6,9 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import Swipeout from 'react-native-swipeout'; //used to create swipe delete button
-import database from './database';
+import fire from './database';
+const database = fire.database();
+import { uid } from '../App';
 
 export default class Note extends Component {
   constructor(props) {
@@ -14,15 +16,16 @@ export default class Note extends Component {
     this.state = {
       counter: 0,
       voted: false,
-      isDisabled: false
+      votes: 0,
+      isDisabled: undefined
     };
-    
+
   }
   componentDidMount() {
     database.ref(`note/${this.props.val.id}/users`).on('value', (snapshot) => {
       temp= []
       snapshot.forEach((child) => {
-        if (JSON.stringify(Expo.Constants.installationId) == JSON.stringify(child)) {
+        if (JSON.stringify(uid) == JSON.stringify(child)) {
           this.setState({
             voted: true
           })
@@ -31,20 +34,22 @@ export default class Note extends Component {
       // console.log(this.state.voted);
     })
   }
-
+  componentWillUnmount() {
+    database.ref().off('value');
+  }
   render() {
     let swipeoutBtns = [
       {
         text: 'X',
         backgroundColor: 'red',
-        onPress: () => this.props.deleteMethod(),
-        
+        onPress: () => this.props.deleteMethod()
       }
     ]
 
     return (
-      <Swipeout right={swipeoutBtns} backgroundColor='white'>
+      <Swipeout right={swipeoutBtns} backgroundColor='#ffffff'>
         <View key={this.props.keyval} style={styles.note}>
+
           <View style={styles.noteTextBorder}>
             <Text style={styles.noteTextNote}>{this.props.val.note}</Text>
           </View>
@@ -53,7 +58,7 @@ export default class Note extends Component {
             <Text style={styles.noteTextCounter}>{this.props.val.votes}</Text>
           </View>
 
-          <TouchableOpacity onPress={this.updateVote} disabled={this.state.isDisabled} style={styles.noteVote}>
+          <TouchableOpacity onPress={this.updateVote} style={styles.noteVote}>
             {this.state.voted ? (<Text style={styles.noteDeleteText}>-</Text>) :
             (<Text style={styles.noteDeleteText}>+</Text>)}
           </TouchableOpacity>
@@ -71,7 +76,7 @@ export default class Note extends Component {
 
     const id = this.props.val.id;
     if (!this.state.voted){
-      database.ref(`note/${id}/users`).push(Expo.Constants.installationId)
+      database.ref(`note/${id}/users`).push(uid);
       database.ref(`note/${id}`).update({
         votes: this.props.val.votes + 1,
       }).then(() => {
@@ -91,7 +96,7 @@ export default class Note extends Component {
         database.ref(`note/${id}/users`).once('value', (snapshot) => {
           temp= []
           snapshot.forEach((childs) => {
-            if (JSON.stringify(Expo.Constants.installationId) == JSON.stringify(childs)) {
+            if (JSON.stringify(uid) == JSON.stringify(childs)) {
               childs.ref.remove();
             }
           })
@@ -151,3 +156,4 @@ const styles = StyleSheet.create({
       fontWeight: 'bold'
   }
 });
+

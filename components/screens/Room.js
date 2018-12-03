@@ -1,28 +1,20 @@
-import React, {Component} from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    ScrollView,
-    TouchableOpacity,
-} from 'react-native';
-import Note from './note';
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, TextInput, ScrollView, TouchableOpacity, Button } from 'react-native';
+import Note from '../note';
 import KeyboardSpacer from 'react-native-keyboard-spacer';  //used to slide view up when keyboard appears
-import database from './database';
+import fire from '../database';
+const database = fire.database();
 
 
-export default class Main extends Component {
+export default class Room extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       noteArray: [],
       noteText: '',
-      id: []
     }
-    //initialize data array from the server and listen for changes
-    
+
   }
   componentDidMount() {
     database.ref('note').on('value', (snapshot) => {
@@ -39,8 +31,10 @@ export default class Main extends Component {
       // this.setState({ noteArray: this.sortNotes(temp) });
     })
   }
+  componentWillUnmount() {
+    database.ref().off('value');
+  }
   render() {
-
     let notes = this.state.noteArray.map((val, key) => {
       return <Note key={val.id} keyVal={key} val={val}
               deleteMethod={ ()=> this.deleteNote(key, val) } />
@@ -63,7 +57,7 @@ export default class Main extends Component {
               onChangeText={(noteText) => this.setState({noteText})}
               value={this.state.noteText}
               placeholder='Add Song'
-              placeholderTextColor='grey'
+              // placeholderTextColor='white'
               underlineColorAndroid='transparent'>
             </TextInput>
 
@@ -81,11 +75,9 @@ export default class Main extends Component {
 
   addNote() {
     if (this.state.noteText) {
-
       const note = {
         'note': this.state.noteText,
-        'votes': 0,
-        'users': []
+        'votes': 0
       }
       for (var i = 0; i < this.state.noteArray.length; i++){
         if (this.state.noteArray[i].note == this.state.noteText) {
@@ -94,8 +86,7 @@ export default class Main extends Component {
           return 
         }
       }
-      database.ref('note').push(note);
-      // console.log(Expo.Constants.installationId);
+      fire.database().ref('note').push(note)
       this.setState({ noteText: ''});
     }
   }
@@ -104,7 +95,7 @@ export default class Main extends Component {
     this.state.noteArray.splice(key, 1);
     const id = val.id;
 
-    database.ref(`note/${id}`).remove();
+    fire.database().ref(`note/${id}`).remove();
 
   }
   sortNotes(newArray) {    
@@ -141,7 +132,6 @@ const styles = StyleSheet.create({
       fontSize: 30,
       padding: 20,
       paddingBottom: 10,
-      fontFamily: 'Futura'
   },
   scrollContainer: {
       flex: 1,

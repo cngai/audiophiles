@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import fire from '../database';
 import { StyleSheet, View, Text, TextInput, ScrollView, TouchableOpacity, Button , Image, ImageBackground } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';  //used to slide view up when keyboard appears
+import { email } from '../../App';
 
 export default class Profile extends Component {
 
@@ -13,6 +14,10 @@ export default class Profile extends Component {
   logout() {
        fire.auth().signOut();
    }
+   componentWillUnmount() {
+    // Unsubscribe.
+    fire.auth();
+  }
 
   render() {
       return (
@@ -21,9 +26,9 @@ export default class Profile extends Component {
             <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
             <View style={styles.signInbody}>
               <View style={styles.bodyContent}>
-                <Text style={styles.name}>Random User</Text>
-                <Text style={styles.info}>UCLA Student</Text>
-                <Text style={styles.description}>Class of 2020</Text>
+                <Text style={styles.name}>{email}</Text>
+                <TextInput style={styles.info}>UCLA Student</TextInput>
+                <TextInput style={styles.description}>Class of 2020</TextInput>
                 <View style={styles.signedInButtonContainer}>
                     <Button title="SIGN OUT" onPress={this.logout} color="white"/>
                 </View>
@@ -36,7 +41,7 @@ export default class Profile extends Component {
 
 const styles = StyleSheet.create({
   header:{
-    backgroundColor: "#cc0000",
+    backgroundColor: "#3498db",
     height:200,
   },
   signedOutBackground:{
@@ -105,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom:20,
     width:125,
     borderRadius:10,
-    backgroundColor: "#cc0000",
+    backgroundColor: "#3498db",
   },
   signedOutButtonContainer: {
     marginTop:50,

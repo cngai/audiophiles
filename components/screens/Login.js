@@ -17,11 +17,11 @@ export default class Login extends Component {
   }
 
   login(e) {
-    console.log(this.state.email);
+    // console.log(this.state.email);
     e.preventDefault();
     fire.auth().signInWithEmailAndPassword(this.state.email.trim(), this.state.password).then((u) => {
     }).catch((error) => {
-      console.log(error.code);
+      // console.log(error.code);
       switch(error.code) {
         case "auth/invalid-email":
           Alert.alert("Please enter a valid email address.");
@@ -38,9 +38,9 @@ export default class Login extends Component {
   signup(e){
     e.preventDefault();
     fire.auth().createUserWithEmailAndPassword(this.state.email.trim(), this.state.password).then((u)=>{
-    }).then((u)=>{console.log(u)})
+    }).then((u)=>{u.uid})
     .catch((error) => {
-        console.log(error.code);
+        // console.log(error.code);
         switch(error.code) {
           case "auth/invalid-email":
             Alert.alert("Please enter a valid email address.");
@@ -59,11 +59,9 @@ export default class Login extends Component {
 
   render() {
     return (
-        <View style={styles.container}>
+        <View style={styles.container} backgroundColor="white">
             <View style={styles.signedOutBackground}>
-              <ImageBackground style={styles.backgroundImage}
-              source={{ uri: "http://www.designbolts.com/wp-content/uploads/2018/09/national_park_sunset_iPhone-Xs-Background-1.jpg" }}>
-                <Text style={styles.signedOutDescription}>Please sign in to your Audiophile account</Text>
+                <Text style={styles.signedOutDescription}>Audiophile</Text>
 
                 <TextInput style={styles.signInInput}
                   onChangeText={email => this.setState({ email })}
@@ -93,13 +91,12 @@ export default class Login extends Component {
                 </TextInput>
                 <View style={styles.signedOutButtonContainer}>
                   <View style={styles.button}>
-                    <Button title="SIGN IN" type="submit" onPress={this.login} color="#d9d9d9"/>
+                    <Button title="SIGN IN" type="submit" onPress={this.login} color="white"/>
                   </View>
                   <View style={styles.button}>
-                    <Button title="SIGN UP" type="submit" onPress={this.signup} color="#d9d9d9"/>
+                    <Button title="SIGN UP" type="submit" onPress={this.signup} color="white"/>
                   </View>
                 </View>
-              </ImageBackground>
             </View>
         </View>
       );
@@ -155,8 +152,9 @@ const styles = StyleSheet.create({
     marginTop:10
   },
   signedOutDescription:{
-    fontSize:16,
-    color: "#FFFFFF",
+    fontSize:40,
+    fontWeight: "700",
+    color: "#3498db",
     marginTop:100,
     marginBottom:50,
     textAlign: 'center'
@@ -189,7 +187,7 @@ const styles = StyleSheet.create({
   button: {
     height:45,
     width:125,
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#3498db",
     marginBottom:10,
     borderRadius:10,
   },

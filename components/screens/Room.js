@@ -3,6 +3,8 @@ import { StyleSheet, View, Text, TextInput, ScrollView, TouchableOpacity, Button
 import Note from '../note';
 import KeyboardSpacer from 'react-native-keyboard-spacer';  //used to slide view up when keyboard appears
 import fire from '../database';
+const database = fire.database();
+
 
 export default class Room extends Component {
 
@@ -11,12 +13,12 @@ export default class Room extends Component {
     this.state = {
       noteArray: [],
       noteText: '',
-      id: []
     }
+
   }
-  //initialize data array from the server and listen for changes
   componentDidMount() {
-    fire.database().ref('note').on('value', (snapshot) => {
+    database.ref('note').on('value', (snapshot) => {
+      // console.log(snapshot);
       temp= []
       snapshot.forEach((child) => {
         temp.push({
@@ -29,8 +31,10 @@ export default class Room extends Component {
       // this.setState({ noteArray: this.sortNotes(temp) });
     })
   }
+  componentWillUnmount() {
+    database.ref().off('value');
+  }
   render() {
-
     let notes = this.state.noteArray.map((val, key) => {
       return <Note key={val.id} keyVal={key} val={val}
               deleteMethod={ ()=> this.deleteNote(key, val) } />
@@ -53,7 +57,7 @@ export default class Room extends Component {
               onChangeText={(noteText) => this.setState({noteText})}
               value={this.state.noteText}
               placeholder='Add Song'
-              placeholderTextColor='grey'
+              // placeholderTextColor='white'
               underlineColorAndroid='transparent'>
             </TextInput>
 
@@ -71,11 +75,9 @@ export default class Room extends Component {
 
   addNote() {
     if (this.state.noteText) {
-
       const note = {
         'note': this.state.noteText,
-        'votes': 0,
-        'users': []
+        'votes': 0
       }
       for (var i = 0; i < this.state.noteArray.length; i++){
         if (this.state.noteArray[i].note == this.state.noteText) {
@@ -84,9 +86,7 @@ export default class Room extends Component {
           return 
         }
       }
-
       fire.database().ref('note').push(note)
-
       this.setState({ noteText: ''});
     }
   }
@@ -130,10 +130,8 @@ const styles = StyleSheet.create({
   headerText: {
       color: 'white',
       fontSize: 30,
-      padding: 35,
+      padding: 20,
       paddingBottom: 10,
-      fontFamily: 'Helvetica Neue',
-      fontWeight: 'normal'
   },
   scrollContainer: {
       flex: 1,
@@ -178,8 +176,9 @@ const styles = StyleSheet.create({
       bottom: 62
   },
   addButtonText: {
-      color: '#e6e6e6',
+      color: '#fff',
       fontSize: 24,
       fontWeight: 'bold'
   }
 });
+

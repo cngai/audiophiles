@@ -7,21 +7,41 @@ import {
 } from 'react-native';
 import Swipeout from 'react-native-swipeout'; //used to create swipe delete button
 import fire from './database';
+const database = fire.database();
+import { uid } from '../App';
 
 export default class Note extends Component {
   constructor(props) {
     super(props);
     this.state = {
       counter: 0,
-      voted: false
+      voted: false,
+      votes: 0,
+      isDisabled: undefined
     };
-  }
 
+  }
+  componentDidMount() {
+    database.ref(`note/${this.props.val.id}/users`).on('value', (snapshot) => {
+      temp= []
+      snapshot.forEach((child) => {
+        if (JSON.stringify(uid) == JSON.stringify(child)) {
+          this.setState({
+            voted: true
+          })
+        }
+      })
+      // console.log(this.state.voted);
+    })
+  }
+  componentWillUnmount() {
+    database.ref().off('value');
+  }
   render() {
     let swipeoutBtns = [
       {
         text: 'X',
-        backgroundColor: '#000000',
+        backgroundColor: 'red',
         onPress: () => this.props.deleteMethod()
       }
     ]
@@ -51,30 +71,43 @@ export default class Note extends Component {
 
   //either add or delete vote
   updateVote = () => {
-    const id = this.props.val.id;
+    this.setState({ isDisabled: true })
+    setTimeout(() => this.setState({ isDisabled: false }), 500);
 
+    const id = this.props.val.id;
     if (!this.state.voted){
-      fire.database().ref(`note/${id}`).update({
-        votes: this.props.val.votes + 1
-      })
-      this.setState({
+      database.ref(`note/${id}/users`).push(uid);
+      database.ref(`note/${id}`).update({
         votes: this.props.val.votes + 1,
-        counter: this.state.counter + 1,
-        voted: true
-      });
+      }).then(() => {
+        this.setState({
+          votes: this.props.val.votes + 1,
+          counter: this.state.counter + 1,
+        });
+      })
+      
+      
 
     }
     else {
-      fire.database().ref(`note/${id}`).update({
+      database.ref(`note/${id}`).update({
         votes: this.props.val.votes - 1
       }).then(() => {
-
+        database.ref(`note/${id}/users`).once('value', (snapshot) => {
+          temp= []
+          snapshot.forEach((childs) => {
+            if (JSON.stringify(uid) == JSON.stringify(childs)) {
+              childs.ref.remove();
+            }
+          })
+        })
+      }).then(() => {
+        this.setState({
+          voted: false,
+          votes: this.props.val.votes - 1,
+          counter: this.state.counter - 1,
+        })
       })
-      this.setState({
-        votes: this.props.val.votes - 1,
-        counter: this.state.counter - 1,
-        voted: false
-      });
     }
   }
 }
@@ -90,8 +123,7 @@ const styles = StyleSheet.create({
   },
   noteTextBorder: {
       borderLeftWidth: 10,
-      borderRadius: 2,
-      borderLeftColor: '#cc0000',
+      borderLeftColor: '#3498db',
       justifyContent: 'center',
       width: 270
   },
@@ -108,11 +140,12 @@ const styles = StyleSheet.create({
       fontSize: 20,
   },
   noteVote: {
+      borderRadius: 5,
+      width: 30,
       position: 'absolute',
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: 5,
-      backgroundColor: '#cc0000',
+      backgroundColor: '#3498db',
       padding: 10,
       top: 10,
       bottom: 10,
@@ -123,3 +156,4 @@ const styles = StyleSheet.create({
       fontWeight: 'bold'
   }
 });
+
